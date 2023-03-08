@@ -35,26 +35,34 @@ function deuxx(){ echo "ac"$(put_spacing)$(git_prompt_info) }
 
 #Print a notification when text field entre vim's command mode
 function zle-line-init zle-keymap-select {
-	if [ $KEYMAP = vicmd ]; then
-		printf "\033[2 q"
-	else
-		printf "\033[6 q"
+	if [ $KEYMAP = vicmd ]
+		then
+			#echo -ne "\033]12;Orange\007"
+			echo -ne "\033]12;#995500\007"
+		else
+			echo -ne "\033]12;White\007"
 	fi
-	RPS1="${${KEYMAP/vicmd/-- VIM-MOTION --}/(main|viins)/}"
-	RPS2=$RPS1
-	zle reset-prompt
+	#RPS1="${${KEYMAP/vicmd/-- VIM-MOTION --}/(main|viins)/}"
+	#RPS2=$RPS1
+	#zle reset-prompt
 }
 
 #Enable vim commande mode
-bindkey -v
 zle -N zle-line-init
 zle -N zle-keymap-select
+bindkey -v
 
-if [ $UID -eq 0 ]; then NCOLOR="red"; else NCOLOR="blue"; fi
+#if [ $UID -eq 0 ]; then NCOLOR="red"; else NCOLOR="blue"; fi
 autoload -U colors && colors
 precmd(){
 	local preprompt_left="%{%F{238}%}%T  %{%f%}%{%F{063}%}%c%{%f%}%$(put_spacing)$(git_prompt_info)"
 	print -Pr "$preprompt_left"
 }
 
-PROMPT='%{$fg[cyan]%}%B|>%(?.:.%{$fg[magenta]%}X)%b%{$fg[cyan]%}%B<|  %b%{$reset_color%}'
+#PROMPT='%{$fg[cyan]%}%B|%{$fg[yellow]%}>%{$fg[cyan]%}%(?.:.%{$fg[magenta]%}X)%b%{$fg[yellow]%}%B<$fg[cyan]%}|  %b%{$reset_color%}'
+FIRST_SYMBOL="%F{cyan}<%f"
+SECOND_SYMBOL="%F{yellow}:%f"
+MID_SYMBOL="%(?.%F{yellow}|%f.%F{red}X%f)"
+FOURTH_SYMBOL="%F{yellow}:%f"
+FIFTH_SYMBOL="%F{cyan}>%f"
+PROMPT="%B$FIRST_SYMBOL$SECOND_SYMBOL$MID_SYMBOL$FOURTH_SYMBOL$FIFTH_SYMBOL%b  "
